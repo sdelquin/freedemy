@@ -14,5 +14,5 @@ t = Twittr(
     MANAGED_TWEETS_FILE,
     API_WINDOW_SIZE,
 )
-t.get_new_tweets()
-print(t.new_tweets)
+print(len(list(t.get_matching_tweets())))
+t.update_managed_tweets_file()
