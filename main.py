@@ -1,5 +1,6 @@
 from prettyconf import config
-from twittr import Twittr
+from course_tracker import CT_Twitter
+from promo import Course
 
 CONSUMER_KEY = config('TWITTER_API_KEY')
 CONSUMER_SECRET = config('TWITTER_SECRET_KEY')
@@ -8,7 +9,7 @@ MANAGED_TWEETS_FILE = config('MANAGED_TWEETS_FILE')
 API_WINDOW_SIZE = config('API_WINDOW_SIZE', cast=int)
 MATCHING_RULES_FILE = config('MATCHING_RULES_FILE')
 
-t = Twittr(
+t = CT_Twitter(
     CONSUMER_KEY,
     CONSUMER_SECRET,
     TWITTER_TARGET_ACCOUNT,
@@ -17,6 +18,7 @@ t = Twittr(
     MATCHING_RULES_FILE,
 )
 
-for tweet in t.get_matching_tweets():
-    print(tweet.text)
+for url in t.get_couponed_course_tracker_urls():
+    c = Course(url)
+    print(url)
 t.update_managed_tweets_file()

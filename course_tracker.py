@@ -5,7 +5,23 @@ import tweepy
 import utils
 
 
-class Twittr:
+class CT_Tweet:
+    ''' Course Tracker Tweet '''
+
+    def __init__(self, tweet: tweepy.models.Status):
+        self.tweet = tweet
+
+    def is_couponed(self):
+        hashtags = [h['text'].upper() for h in self.tweet.entities['hashtags']]
+        return 'COUPON' in hashtags
+
+    def get_course_tracker_url(self):
+        return self.tweet.entities['urls'][0]['expanded_url']
+
+
+class CT_Twitter:
+    ''' Course Tracker Twitter '''
+
     def __init__(
         self,
         consumer_key: str,
@@ -17,7 +33,9 @@ class Twittr:
     ):
         auth = tweepy.AppAuthHandler(consumer_key, consumer_secret)
         self.api = tweepy.API(auth)
-        self.cursor = tweepy.Cursor(self.api.user_timeline, id=twitter_target_account)
+        self.cursor = tweepy.Cursor(
+            self.api.user_timeline, id=twitter_target_account, tweet_mode='extended'
+        )
 
         self.managed_tweets_file = Path(managed_tweets_file)
         if not self.managed_tweets_file.exists():
@@ -52,9 +70,15 @@ class Twittr:
     def get_matching_tweets(self):
         regex = utils.get_compiled_regex(tuple(self.get_maching_rules()))
         for tweet in self.get_new_tweets():
-            if regex.search(tweet.text) is not None:
+            if regex.search(tweet.full_text) is not None:
                 yield tweet
 
     def update_managed_tweets_file(self):
         api_tweets_ids = [str(tweet.id) for tweet in self.get_api_tweets()]
         self.managed_tweets_file.write_text('\n'.join(api_tweets_ids))
+
+    def get_couponed_course_tracker_urls(self):
+        for tweet in self.get_matching_tweets():
+            ct_tweet = CT_Tweet(tweet)
+            if ct_tweet.is_couponed():
+                yield ct_tweet.get_course_tracker_url()
