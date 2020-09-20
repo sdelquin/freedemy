@@ -1,5 +1,8 @@
-import tweepy
 from pathlib import Path
+
+import tweepy
+
+import utils
 
 
 class Twittr:
@@ -10,15 +13,22 @@ class Twittr:
         twitter_target_account: str,
         managed_tweets_file: Path,
         api_window_size: int,
+        matching_rules_file: Path,
     ):
         auth = tweepy.AppAuthHandler(consumer_key, consumer_secret)
         self.api = tweepy.API(auth)
         self.cursor = tweepy.Cursor(self.api.user_timeline, id=twitter_target_account)
+
         self.managed_tweets_file = Path(managed_tweets_file)
         if not self.managed_tweets_file.exists():
             self.managed_tweets_file.touch()
+
         self.api_window_size = api_window_size
         self.api_tweets = []
+
+        self.matching_rules_file = Path(matching_rules_file)
+        if not self.matching_rules_file.exists():
+            self.matching_rules_file.touch()
 
     def get_managed_tweets_ids(self):
         yield from [
@@ -36,9 +46,13 @@ class Twittr:
             if tweet.id not in list(self.get_managed_tweets_ids()):
                 yield tweet
 
+    def get_maching_rules(self):
+        yield from self.matching_rules_file.read_text().split()
+
     def get_matching_tweets(self):
+        regex = utils.get_compiled_regex(tuple(self.get_maching_rules()))
         for tweet in self.get_new_tweets():
-            if len(tweet.text) > 0:
+            if regex.search(tweet.text) is not None:
                 yield tweet
 
     def update_managed_tweets_file(self):
