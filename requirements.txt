@@ -1,0 +1,4 @@
+tweepy
+prettyconf
+beautifulsoup4
+requests

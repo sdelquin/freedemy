@@ -20,5 +20,5 @@ t = CT_Twitter(
 
 for url in t.get_couponed_course_tracker_urls():
     c = Course(url)
-    print(url)
+    print(c, end='\n')
 t.update_managed_tweets_file()
