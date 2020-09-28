@@ -7,6 +7,8 @@ from prettyconf import config
 
 
 class Course:
+    ''' Represent a course in Udemy '''
+
     def __init__(self, course_tracker_url):
         self.course_tracker_url = course_tracker_url
         self.courses_base_url = config('UDEMY_COURSES_BASE_URL')
@@ -17,18 +19,40 @@ class Course:
         soup = BeautifulSoup(response.text, 'html.parser')
         element = soup.find(id='__NEXT_DATA__')
         self.next_data = json.loads(element.string)
-
-    @property
-    def coupon(self):
-        return self.next_data['props']['pageProps']['course']['coupon'][0]['code']
+        # to improve readability (in further accesses)
+        self.course_info = self.next_data['props']['pageProps']['course']
 
     @property
     def slug(self):
         return self.next_data['query']['cleanUrl']
 
     @property
+    def coupon(self):
+        return self.course_info['coupon'][0]['code']
+
+    @property
     def title(self):
-        return self.next_data['props']['pageProps']['course']['detail'][0]['title']
+        return self.course_info['detail'][0]['title']
+
+    @property
+    def headline(self):
+        return self.course_info['detail'][0]['headline']
+
+    @property
+    def price(self):
+        return self.course_info['detail'][0]['price'] / 100
+
+    @property
+    def rating(self):
+        return self.course_info['detail'][0]['rating']
+
+    @property
+    def subscribers(self):
+        return self.course_info['detail'][0]['subscribers']
+
+    @property
+    def discount_price(self):
+        return self.course_info['coupon'][0]['discountPrice']
 
     @property
     def url(self):
@@ -36,3 +60,17 @@ class Course:
 
     def __str__(self):
         return f'{self.title}\n{self.url}'
+
+    def get_course_info(self):
+        return '\n'.join(
+            map(
+                str,
+                [
+                    self.headline,
+                    self.price,
+                    self.rating,
+                    self.subscribers,
+                    self.discount_price,
+                ],
+            )
+        )
