@@ -1,5 +1,7 @@
 import json
 import os
+from pathlib import Path
+from string import Template
 
 import requests
 from bs4 import BeautifulSoup
@@ -59,18 +61,24 @@ class Course:
         return os.path.join(self.courses_base_url, self.slug, f'?couponCode={self.coupon}')
 
     def __str__(self):
-        return f'{self.title}\n{self.url}'
+        template = Template(Path('course.tmpl').read_text())
+        return template.substitute(
+            title=self.title,
+            headline=self.headline,
+            rating=round(self.rating, 2),
+            subscribers=self.subscribers,
+            price=self.price,
+            discount_price=self.discount_price,
+            url=self.url,
+        )
 
-    def get_course_info(self):
-        return '\n'.join(
-            map(
-                str,
-                [
-                    self.headline,
-                    self.price,
-                    self.rating,
-                    self.subscribers,
-                    self.discount_price,
-                ],
-            )
+    def as_dict(self):
+        return dict(
+            title=self.title,
+            url=self.url,
+            headline=self.headline,
+            price=self.price,
+            discount_price=self.discount_price,
+            rating=self.rating,
+            subscribers=self.subscribers,
         )
