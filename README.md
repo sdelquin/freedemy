@@ -16,5 +16,6 @@ Freedemy is a service written in Python to scrap and deliver **free couponed cou
 1. Clone repo.
 2. Create a virtualenv with **Python3**.
 3. Set the appropiate values in `.env` file.
-4. Install requirements: `pip install -r requirements.txt`
-5. Launch main script: `python main.py`
+4. Include search terms in `search-terms.dat`.
+5. Install requirements: `pip install -r requirements.txt`
+6. Launch main script: `python main.py`

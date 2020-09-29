@@ -29,7 +29,7 @@ class CT_Twitter:
         twitter_target_account: str,
         last_managed_tweet_file: Path,
         api_window_size: int,
-        matching_rules_file: Path,
+        search_terms_file: Path,
     ):
         auth = tweepy.AppAuthHandler(consumer_key, consumer_secret)
         self.api = tweepy.API(auth)
@@ -42,9 +42,9 @@ class CT_Twitter:
         self.api_window_size = api_window_size
         self.api_tweets = []
 
-        self.matching_rules_file = Path(matching_rules_file)
-        if not self.matching_rules_file.exists():
-            self.matching_rules_file.touch()
+        self.search_terms_file = Path(search_terms_file)
+        if not self.search_terms_file.exists():
+            self.search_terms_file.touch()
 
     def get_last_managed_tweet_id(self):
         try:
@@ -64,11 +64,11 @@ class CT_Twitter:
             self.api_tweets = list(cursor.items(self.api_window_size))
         return self.api_tweets
 
-    def get_matching_rules(self):
-        yield from self.matching_rules_file.read_text().split()
+    def get_search_terms(self):
+        yield from self.search_terms_file.read_text().split()
 
     def get_matching_tweets(self):
-        regex = utils.get_compiled_regex(tuple(self.get_matching_rules()))
+        regex = utils.get_compiled_regex(tuple(self.get_search_terms()))
         for tweet in self.get_new_tweets():
             if regex.search(tweet.full_text) is not None:
                 yield tweet
