@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import tweepy
+from logzero import logger
 
 import utils
 
@@ -31,12 +32,14 @@ class CT_Twitter:
         api_window_size: int,
         search_terms_file: Path,
     ):
+        logger.info('Building Tweepy API handler...')
         auth = tweepy.AppAuthHandler(consumer_key, consumer_secret)
         self.api = tweepy.API(auth)
         self.twitter_target_account = twitter_target_account
 
         self.last_managed_tweet_file = Path(last_managed_tweet_file)
         if not self.last_managed_tweet_file.exists():
+            logger.warning('File of last managed tweet not found. Creating...')
             self.last_managed_tweet_file.touch()
 
         self.api_window_size = api_window_size
@@ -44,6 +47,7 @@ class CT_Twitter:
 
         self.search_terms_file = Path(search_terms_file)
         if not self.search_terms_file.exists():
+            logger.warning('File of search terms not found. Creating...')
             self.search_terms_file.touch()
 
     def get_last_managed_tweet_id(self):
@@ -55,6 +59,7 @@ class CT_Twitter:
     def get_new_tweets(self, force_api_call=False):
         # avoid not needed API calls
         if not self.api_tweets or force_api_call:
+            logger.info('Getting tweets from API...')
             cursor = tweepy.Cursor(
                 self.api.user_timeline,
                 id=self.twitter_target_account,
@@ -68,16 +73,19 @@ class CT_Twitter:
         yield from self.search_terms_file.read_text().split()
 
     def get_matching_tweets(self):
+        logger.info('Getting matching tweets from search terms...')
         regex = utils.get_compiled_regex(tuple(self.get_search_terms()))
         for tweet in self.get_new_tweets():
             if regex.search(tweet.full_text) is not None:
                 yield tweet
 
     def update_last_managed_tweet_file(self):
+        logger.info('Updating last managed tweet on file...')
         if managed_tweets_ids := [tweet.id for tweet in self.get_new_tweets()]:
             self.last_managed_tweet_file.write_text(str(max(managed_tweets_ids)))
 
     def get_couponed_course_tracker_urls(self):
+        logger.info('Getting tracker url of free couponed courses..')
         for tweet in self.get_matching_tweets():
             ct_tweet = CT_Tweet(tweet)
             if ct_tweet.is_couponed():

@@ -3,3 +3,4 @@ prettyconf
 beautifulsoup4
 requests
 slackclient
+logzero
