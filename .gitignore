@@ -4,3 +4,4 @@
 *.dat
 resources
 *.log
+.DS_Store
