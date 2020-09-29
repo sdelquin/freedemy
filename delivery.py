@@ -14,6 +14,8 @@ class SlackDelivery:
     def post(self, course: Course):
         logger.info('Posting course info in Slack channel...')
         try:
-            self.client.chat_postMessage(channel=self.slack_channel, text=str(course))
+            return self.client.chat_postMessage(
+                channel=self.slack_channel, text=str(course)
+            )
         except SlackApiError as e:
             logger.error(e.response['error'])
