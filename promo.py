@@ -29,39 +29,66 @@ class Course:
 
     @property
     def slug(self):
-        return self.next_data['query']['cleanUrl']
+        try:
+            return self.next_data['query']['cleanUrl']
+        except Exception:
+            logger.error('Unable to locate slug')
 
     @property
     def coupon(self):
-        return self.course_info['coupon'][0]['code']
+        try:
+            return self.course_info['coupon'][0]['code']
+        except Exception:
+            logger.error('Unable to locate coupon')
 
     @property
     def title(self):
-        return self.course_info['detail'][0]['title']
+        try:
+            return self.course_info['detail'][0]['title']
+        except Exception:
+            logger.error('Unable to locate title')
 
     @property
     def headline(self):
-        return self.course_info['detail'][0]['headline']
+        try:
+            return self.course_info['detail'][0]['headline']
+        except Exception:
+            logger.error('Unable to locate headline')
 
     @property
     def price(self):
-        return self.course_info['detail'][0]['price'] / 100
+        try:
+            return self.course_info['detail'][0]['price'] / 100
+        except Exception:
+            logger.error('Unable to locate price')
 
     @property
     def rating(self):
-        return self.course_info['detail'][0]['rating']
+        try:
+            return self.course_info['detail'][0]['rating']
+        except Exception:
+            logger.error('Unable to locate rating')
 
     @property
     def subscribers(self):
-        return self.course_info['detail'][0]['subscribers']
+        try:
+            return self.course_info['detail'][0]['subscribers']
+        except Exception:
+            logger.error('Unable to locate subscribers')
 
     @property
     def discount_price(self):
-        return self.course_info['coupon'][0]['discountPrice']
+        try:
+            return self.course_info['coupon'][0]['discountPrice']
+        except Exception:
+            logger.error('Unable to locate discount price')
 
     @property
     def url(self):
         return os.path.join(self.courses_base_url, self.slug, f'?couponCode={self.coupon}')
+
+    def is_valid(self):
+        return all((self.url is not None, self.slug is not None, self.title is not None))
 
     def __str__(self):
         template = Template(Path('course.tmpl').read_text())

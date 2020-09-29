@@ -34,5 +34,8 @@ d = SlackDelivery(SLACK_API_TOKEN, SLACK_CHANNEL)
 for url in t.get_couponed_course_tracker_urls():
     logger.debug(f'Managing {url}')
     c = Course(url)
-    d.post(c)
+    if c.is_valid():
+        d.post(c)
+    else:
+        logger.warning('Current course is not valid. Skipping...')
 t.update_last_managed_tweet_file()
