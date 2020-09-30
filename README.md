@@ -24,4 +24,4 @@ Freedemy is a service written in Python to scrap and deliver **free couponed cou
 5. Install requirements: `pip install -r requirements.txt`
 6. Launch main script: `python main.py`
 
-🎉 If everthing goes fine you'll get desired discount courses on your Slack channel.
+🎉 &nbsp; If everthing goes fine you'll get desired discount courses on your Slack channel.
