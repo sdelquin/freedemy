@@ -70,11 +70,12 @@ class CT_Twitter:
         return self.api_tweets
 
     def get_search_terms(self):
-        yield from self.search_terms_file.read_text().split()
+        yield from self.search_terms_file.read_text().strip().split('\n')
 
     def get_matching_tweets(self):
         logger.info('Starting tweet matching from search terms...')
         regex = utils.get_compiled_regex(tuple(self.get_search_terms()))
+        print(regex)
         for tweet in self.get_new_tweets():
             logger.debug(tweet.full_text)
             if regex.search(tweet.full_text) is not None:
