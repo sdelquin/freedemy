@@ -14,5 +14,3 @@ UDEMY_COURSES_BASE_URL = config(
     'UDEMY_COURSES_BASE_URL', default='https://www.udemy.com/course/'
 )
 LOGFILE = config('LOGFILE', default='freedemy.log')
-# Just for testing purposes
-COURSE_TRACKER_TEST_URL = config('COURSE_TRACKER_TEST_URL')

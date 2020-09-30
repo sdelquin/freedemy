@@ -1,10 +1,10 @@
 from pathlib import Path
 
 import pytest
-from promo import Course
 import settings
+from prettyconf import config
+from promo import Course
 
-COURSE_TRACKER_TEST_URL = settings.COURSE_TRACKER_TEST_URL
 COURSE_PROPERTIES = (
     'slug',
     'coupon',
@@ -19,7 +19,7 @@ COURSE_PROPERTIES = (
 
 @pytest.fixture
 def course():
-    c = Course(settings.COURSE_TRACKER_TEST_URL, settings.UDEMY_COURSES_BASE_URL)
+    c = Course(config('COURSE_TRACKER_TEST_URL'), settings.UDEMY_COURSES_BASE_URL)
     c.get_course_tracker_data()
     return c
 

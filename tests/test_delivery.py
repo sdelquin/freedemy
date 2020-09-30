@@ -1,6 +1,7 @@
 import pytest
 import settings
 from delivery import SlackDelivery
+from prettyconf import config
 from promo import Course
 
 
@@ -11,7 +12,7 @@ def delivery_service():
 
 @pytest.fixture
 def course():
-    c = Course(settings.COURSE_TRACKER_TEST_URL, settings.UDEMY_COURSES_BASE_URL)
+    c = Course(config('COURSE_TRACKER_TEST_URL'), settings.UDEMY_COURSES_BASE_URL)
     c.get_course_tracker_data()
     return c
 
