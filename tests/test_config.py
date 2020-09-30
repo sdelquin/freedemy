@@ -3,7 +3,6 @@ from prettyconf import config
 CONFIG_KEYS = (
     'TWITTER_API_KEY',
     'TWITTER_SECRET_KEY',
-    'TWITTER_TARGET_ACCOUNT',
     'SLACK_API_TOKEN',
     'SLACK_CHANNEL',
 )

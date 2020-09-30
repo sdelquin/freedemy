@@ -2,7 +2,7 @@ import os
 
 import pytest
 from course_tracker import CT_Twitter
-from prettyconf import config
+import settings
 
 API_WINDOW_SIZE = 10
 LAST_MANAGED_TWEET_FILE = 'last-managed-tweet.test'
@@ -12,9 +12,9 @@ SEARCH_TERMS_FILE = 'search-terms.test'
 @pytest.fixture
 def course_tracker():
     yield CT_Twitter(
-        consumer_key=config('TWITTER_API_KEY'),
-        consumer_secret=config('TWITTER_SECRET_KEY'),
-        twitter_target_account=config('TWITTER_TARGET_ACCOUNT'),
+        consumer_key=settings.TWITTER_API_KEY,
+        consumer_secret=settings.TWITTER_SECRET_KEY,
+        twitter_target_account=settings.TWITTER_TARGET_ACCOUNT,
         last_managed_tweet_file=LAST_MANAGED_TWEET_FILE,
         api_window_size=API_WINDOW_SIZE,
         search_terms_file=SEARCH_TERMS_FILE,

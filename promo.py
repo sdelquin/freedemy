@@ -6,16 +6,15 @@ from string import Template
 import requests
 from bs4 import BeautifulSoup
 from logzero import logger
-from prettyconf import config
 
 
 class Course:
     ''' Represent a course in Udemy '''
 
-    def __init__(self, course_tracker_url):
+    def __init__(self, course_tracker_url, courses_base_url):
         logger.info('Building Udemy course...')
         self.course_tracker_url = course_tracker_url
-        self.courses_base_url = config('UDEMY_COURSES_BASE_URL')
+        self.courses_base_url = courses_base_url
         self.get_course_tracker_data()
 
     def get_course_tracker_data(self):

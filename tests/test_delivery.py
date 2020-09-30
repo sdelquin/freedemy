@@ -1,21 +1,17 @@
 import pytest
+import settings
 from delivery import SlackDelivery
-from prettyconf import config
 from promo import Course
-
-COURSE_TRACKER_TEST_URL = config('COURSE_TRACKER_TEST_URL')
-SLACK_API_TOKEN = config('SLACK_API_TOKEN')
-SLACK_CHANNEL = config('SLACK_CHANNEL')
 
 
 @pytest.fixture
 def delivery_service():
-    return SlackDelivery(SLACK_API_TOKEN, SLACK_CHANNEL)
+    return SlackDelivery(settings.SLACK_API_TOKEN, settings.SLACK_CHANNEL)
 
 
 @pytest.fixture
 def course():
-    c = Course(COURSE_TRACKER_TEST_URL)
+    c = Course(settings.COURSE_TRACKER_TEST_URL, settings.UDEMY_COURSES_BASE_URL)
     c.get_course_tracker_data()
     return c
 
