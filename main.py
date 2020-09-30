@@ -22,6 +22,13 @@ delivery = SlackDelivery(settings.SLACK_API_TOKEN, settings.SLACK_CHANNEL)
 for url in course_tracker.get_couponed_course_tracker_urls():
     logger.debug(f'Managing {url}')
     course = Course(url, settings.UDEMY_COURSES_BASE_URL)
+
+    logger.debug('Coupons:')
+    for coupon in course.coupons:
+        logger.debug(
+            f'{coupon["code"]} | valid: {coupon["isValid"]} | {coupon["discountValue"]}'
+        )
+
     if course.is_valid():
         delivery.post(course)
     else:

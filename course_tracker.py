@@ -75,7 +75,6 @@ class CT_Twitter:
     def get_matching_tweets(self):
         logger.info('Starting tweet matching from search terms...')
         regex = utils.get_compiled_regex(tuple(self.get_search_terms()))
-        print(regex)
         for tweet in self.get_new_tweets():
             logger.debug(tweet.full_text)
             if regex.search(tweet.full_text) is not None:

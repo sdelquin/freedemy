@@ -89,6 +89,10 @@ class Course:
     def is_valid(self):
         return all((self.url is not None, self.slug is not None, self.title is not None))
 
+    @property
+    def coupons(self):
+        return self.next_data['props']['pageProps']['coupons']
+
     def __str__(self):
         template = Template(Path('course.tmpl').read_text())
         return template.substitute(
