@@ -59,7 +59,7 @@ class CT_Twitter:
     def get_new_tweets(self, force_api_call=False):
         # avoid not needed API calls
         if not self.api_tweets or force_api_call:
-            logger.info('Getting tweets from API...')
+            logger.info('Getting new tweets from API...')
             cursor = tweepy.Cursor(
                 self.api.user_timeline,
                 id=self.twitter_target_account,
@@ -76,6 +76,7 @@ class CT_Twitter:
         logger.info('Starting tweet matching from search terms...')
         regex = utils.get_compiled_regex(tuple(self.get_search_terms()))
         for tweet in self.get_new_tweets():
+            logger.debug(tweet.full_text)
             if regex.search(tweet.full_text) is not None:
                 yield tweet
 
