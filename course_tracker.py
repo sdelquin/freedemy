@@ -2,6 +2,7 @@ from pathlib import Path
 
 import tweepy
 from logzero import logger
+import settings
 
 import utils
 
@@ -17,7 +18,10 @@ class CT_Tweet:
         return 'COUPON' in hashtags
 
     def get_course_tracker_url(self):
-        return self.tweet.entities['urls'][0]['expanded_url']
+        for url in self.tweet.entities['urls']:
+            if url['expanded_url'].startswith(settings.COURSE_TRACKER_BASE_URL):
+                return url['expanded_url']
+        logger.error('Unable to locate course tracker url')
 
 
 class CT_Twitter:
