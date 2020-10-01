@@ -87,7 +87,7 @@ class Course:
         return os.path.join(self.courses_base_url, self.slug, f'?couponCode={self.coupon}')
 
     def is_valid(self):
-        return all((self.url is not None, self.slug is not None, self.title is not None))
+        return all((self.coupon is not None, self.slug is not None, self.title is not None))
 
     @property
     def coupons(self):
