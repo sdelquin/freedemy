@@ -31,7 +31,7 @@ class CT_Twitter:
         self,
         consumer_key: str,
         consumer_secret: str,
-        twitter_target_account: str,
+        COURSE_TRACKER_TWITTER: str,
         last_managed_tweet_file: Path,
         api_window_size: int,
         search_terms_file: Path,
@@ -39,7 +39,7 @@ class CT_Twitter:
         logger.info('Building Tweepy API handler...')
         auth = tweepy.AppAuthHandler(consumer_key, consumer_secret)
         self.api = tweepy.API(auth)
-        self.twitter_target_account = twitter_target_account
+        self.COURSE_TRACKER_TWITTER = COURSE_TRACKER_TWITTER
 
         self.last_managed_tweet_file = Path(last_managed_tweet_file)
         if not self.last_managed_tweet_file.exists():
@@ -66,7 +66,7 @@ class CT_Twitter:
             logger.info('Getting new tweets from API...')
             cursor = tweepy.Cursor(
                 self.api.user_timeline,
-                id=self.twitter_target_account,
+                id=self.COURSE_TRACKER_TWITTER,
                 tweet_mode='extended',
                 since_id=self.get_last_managed_tweet_id(),
             )

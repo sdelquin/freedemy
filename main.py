@@ -11,7 +11,7 @@ logfile(settings.LOGFILE, maxBytes=1e6, backupCount=3)
 course_tracker = CT_Twitter(
     settings.TWITTER_API_KEY,
     settings.TWITTER_SECRET_KEY,
-    settings.TWITTER_TARGET_ACCOUNT,
+    settings.COURSE_TRACKER_TWITTER,
     settings.LAST_MANAGED_TWEET_FILE,
     settings.API_WINDOW_SIZE,
     settings.SEARCH_TERMS_FILE,

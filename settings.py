@@ -4,7 +4,7 @@ TWITTER_API_KEY = config('TWITTER_API_KEY')
 TWITTER_SECRET_KEY = config('TWITTER_SECRET_KEY')
 SLACK_API_TOKEN = config('SLACK_API_TOKEN')
 SLACK_CHANNEL = config('SLACK_CHANNEL')
-TWITTER_TARGET_ACCOUNT = config('TWITTER_TARGET_ACCOUNT', default='comidoc')
+COURSE_TRACKER_TWITTER = config('COURSE_TRACKER_TWITTER', default='comidoc')
 COURSE_TRACKER_BASE_URL = config('COURSE_TRACKER_BASE_URL', default='https://comidoc.net')
 LAST_MANAGED_TWEET_FILE = config(
     'LAST_MANAGED_TWEET_FILE', default='last-managed-tweet.dat'
