@@ -15,3 +15,6 @@ UDEMY_COURSES_BASE_URL = config(
     'UDEMY_COURSES_BASE_URL', default='https://www.udemy.com/course/'
 )
 LOGFILE = config('LOGFILE', default='freedemy.log')
+LOGFILE_SIZE = config('LOGFILE_SIZE', cast=float, default=1e6)
+LOGFILE_BACKUP_COUNT = config('LOGFILE_BACKUP_COUNT', cast=int, default=3)
+JOB_EXECUTION_TIMEDELTA = config('JOB_EXECUTION_TIMEDELTA', cast=int, default=7 * 60)
