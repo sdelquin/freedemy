@@ -1,7 +1,8 @@
-from fabric.api import local, cd, run, env, prefix
+from pathlib import Path
 
-PROJECT = 'freedemy'
+from fabric.api import cd, env, local, prefix, run
 
+PROJECT = Path('.').parent.absolute().parts[-1]
 env.hosts = ['cloud']
 
 
@@ -11,4 +12,4 @@ def deploy():
         with cd(f'~/code/{PROJECT}'):
             run('git pull')
             run('pip install -r requirements.txt')
-            run('supervisortctl restart rq_freedemy')
+            run(f'supervisortctl restart rq_{PROJECT}')
