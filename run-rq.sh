@@ -2,4 +2,4 @@
 
 source ~/.virtualenvs/freedemy/bin/activate
 cd "$(dirname "$0")"
-exec rq worker --with-scheduler
+exec rq worker freedemy --with-scheduler

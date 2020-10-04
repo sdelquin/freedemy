@@ -17,7 +17,7 @@ logfile(
 
 
 def run():
-    course_queue = Queue(connection=Redis())
+    course_queue = Queue(settings.REDIS_QUEUE, connection=Redis())
     course_tracker = CT_Twitter(
         settings.TWITTER_API_KEY,
         settings.TWITTER_SECRET_KEY,
