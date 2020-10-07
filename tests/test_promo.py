@@ -62,3 +62,9 @@ def test_invalid_locale(course):
 @pytest.mark.valid_course_locales([])
 def test_empty_locales(course):
     assert course.has_valid_locale() is True
+
+
+@pytest.mark.course_tracker_url(config('COURSE_TRACKER_TEST_URL'))
+@pytest.mark.valid_course_locales([])
+def test_course_language(course):
+    assert course.language_flag == '🇺🇸'

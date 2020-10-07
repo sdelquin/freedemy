@@ -7,6 +7,8 @@ import requests
 from bs4 import BeautifulSoup
 from logzero import logger
 
+import utils
+
 
 def get_valid_course_locales(valid_course_locales_file):
     logger.info('Getting valid course locales from file...')
@@ -106,6 +108,17 @@ class Course:
     def url(self):
         return os.path.join(self.courses_base_url, self.slug, f'?couponCode={self.coupon}')
 
+    @property
+    def language(self):
+        try:
+            return self.locale.split('_')[0]
+        except Exception:
+            logger.error('Unable to locate language')
+
+    @property
+    def language_flag(self):
+        return utils.LANGUAGE_FLAGS.get(self.language, 'Unspecified')
+
     def has_valid_locale(self):
         logger.info('Checking if course has valid locale...')
         if self.locale is not None:
@@ -143,15 +156,5 @@ class Course:
             price=self.price,
             discount_price=self.discount_price,
             url=self.url,
-        )
-
-    def as_dict(self):
-        return dict(
-            title=self.title,
-            url=self.url,
-            headline=self.headline,
-            price=self.price,
-            discount_price=self.discount_price,
-            rating=self.rating,
-            subscribers=self.subscribers,
+            language_flag=self.language_flag,
         )
