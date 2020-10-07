@@ -7,6 +7,7 @@ import requests
 from bs4 import BeautifulSoup
 from logzero import logger
 
+import settings
 import utils
 
 
@@ -25,10 +26,10 @@ def get_valid_course_locales(valid_course_locales_file):
 class Course:
     ''' Represent a course in Udemy '''
 
-    def __init__(self, course_tracker_url, courses_base_url, valid_course_locales=[]):
+    def __init__(self, course_tracker_url, valid_course_locales=[]):
         logger.info('Building Udemy course...')
         self.course_tracker_url = course_tracker_url
-        self.courses_base_url = courses_base_url
+        self.courses_base_url = settings.UDEMY_COURSES_BASE_URL
         self.valid_course_locales = valid_course_locales
         self.get_course_tracker_data()
 
@@ -146,6 +147,26 @@ class Course:
     def coupons(self):
         return self.next_data['props']['pageProps']['coupons']
 
+    def get_expiration_message(self, force_request=False):
+        # avoid not needed requests
+        if not hasattr(self, 'expiration_message') or force_request:
+            logger.info('Getting expiration message from Udemy...')
+            try:
+                response = requests.get(self.url)
+                soup = BeautifulSoup(response.text, 'html.parser')
+                expiration_span = soup.find(
+                    'span',
+                    attrs={
+                        'data-purpose': 'safely-set-inner-html:'
+                        'discount-expiration:expiration-text'
+                    },
+                )
+            except Exception:
+                logger.error('Unable to locate expiration message')
+            else:
+                self.expiration_message = getattr(expiration_span, 'text', 'Not available')
+        return self.expiration_message
+
     def __str__(self):
         template = Template(Path('course.tmpl').read_text())
         return template.substitute(
@@ -157,4 +178,5 @@ class Course:
             discount_price=self.discount_price,
             url=self.url,
             language_flag=self.language_flag,
+            expiration_message=self.get_expiration_message(),
         )

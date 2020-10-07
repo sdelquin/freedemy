@@ -31,7 +31,7 @@ class CT_Twitter:
         self,
         consumer_key: str,
         consumer_secret: str,
-        COURSE_TRACKER_TWITTER: str,
+        course_tracker_twitter: str,
         last_managed_tweet_file: Path,
         api_window_size: int,
         search_terms_file: Path,
@@ -39,7 +39,7 @@ class CT_Twitter:
         logger.info('Building Tweepy API handler...')
         auth = tweepy.AppAuthHandler(consumer_key, consumer_secret)
         self.api = tweepy.API(auth)
-        self.COURSE_TRACKER_TWITTER = COURSE_TRACKER_TWITTER
+        self.COURSE_TRACKER_TWITTER = course_tracker_twitter
 
         self.last_managed_tweet_file = Path(last_managed_tweet_file)
         if not self.last_managed_tweet_file.exists():

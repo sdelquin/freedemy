@@ -10,7 +10,7 @@ LAST_MANAGED_TWEET_FILE = config(
     'LAST_MANAGED_TWEET_FILE', default='last-managed-tweet.dat'
 )
 SEARCH_TERMS_FILE = config('SEARCH_TERMS_FILE', default='search-terms.dat')
-API_WINDOW_SIZE = config('API_WINDOW_SIZE', cast=int, default=10)
+TWITTER_API_WINDOW_SIZE = config('TWITTER_API_WINDOW_SIZE', cast=int, default=10)
 UDEMY_COURSES_BASE_URL = config(
     'UDEMY_COURSES_BASE_URL', default='https://www.udemy.com/course/'
 )

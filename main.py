@@ -15,12 +15,12 @@ logger = init_logger()
 def run():
     course_queue = Queue(settings.REDIS_QUEUE, connection=Redis())
     course_tracker = CT_Twitter(
-        settings.TWITTER_API_KEY,
-        settings.TWITTER_SECRET_KEY,
-        settings.COURSE_TRACKER_TWITTER,
-        settings.LAST_MANAGED_TWEET_FILE,
-        settings.API_WINDOW_SIZE,
-        settings.SEARCH_TERMS_FILE,
+        consumer_key=settings.TWITTER_API_KEY,
+        consumer_secret=settings.TWITTER_SECRET_KEY,
+        course_tracker_twitter=settings.COURSE_TRACKER_TWITTER,
+        last_managed_tweet_file=settings.LAST_MANAGED_TWEET_FILE,
+        api_window_size=settings.TWITTER_API_WINDOW_SIZE,
+        search_terms_file=settings.SEARCH_TERMS_FILE,
     )
     delivery_service = SlackDelivery(settings.SLACK_API_TOKEN, settings.SLACK_CHANNEL)
     for url in course_tracker.get_couponed_course_tracker_urls():

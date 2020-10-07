@@ -12,7 +12,6 @@ def manage_course(course_tracker_url, delivery_service):
 
     course = Course(
         course_tracker_url,
-        settings.UDEMY_COURSES_BASE_URL,
         valid_course_locales,
     )
 
