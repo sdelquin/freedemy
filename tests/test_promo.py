@@ -1,7 +1,6 @@
 from pathlib import Path
 
 import pytest
-import settings
 from prettyconf import config
 from promo import Course
 
@@ -28,7 +27,7 @@ def course(request):
     marker = request.node.get_closest_marker('valid_course_locales')
     valid_course_locales = marker.args[0] if marker is not None else []
 
-    c = Course(course_tracker_url, settings.UDEMY_COURSES_BASE_URL, valid_course_locales)
+    c = Course(course_tracker_url, valid_course_locales)
     c.get_course_tracker_data()
     return c
 
