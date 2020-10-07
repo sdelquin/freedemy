@@ -14,7 +14,7 @@ def course_tracker():
     yield CT_Twitter(
         consumer_key=settings.TWITTER_API_KEY,
         consumer_secret=settings.TWITTER_SECRET_KEY,
-        COURSE_TRACKER_TWITTER=settings.COURSE_TRACKER_TWITTER,
+        course_tracker_twitter=settings.COURSE_TRACKER_TWITTER,
         last_managed_tweet_file=LAST_MANAGED_TWEET_FILE,
         api_window_size=API_WINDOW_SIZE,
         search_terms_file=SEARCH_TERMS_FILE,
