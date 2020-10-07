@@ -164,7 +164,7 @@ class Course:
             except Exception:
                 logger.error('Unable to locate expiration message')
             else:
-                self.expiration_message = getattr(expiration_span, 'text', 'Unspecified')
+                self.expiration_message = getattr(expiration_span, 'text', 'Not available')
         return self.expiration_message
 
     def __str__(self):
