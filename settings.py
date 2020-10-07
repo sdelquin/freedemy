@@ -19,3 +19,6 @@ LOGFILE_SIZE = config('LOGFILE_SIZE', cast=float, default=1e6)
 LOGFILE_BACKUP_COUNT = config('LOGFILE_BACKUP_COUNT', cast=int, default=3)
 JOB_EXECUTION_TIMEDELTA = config('JOB_EXECUTION_TIMEDELTA', cast=int, default=7 * 60)
 REDIS_QUEUE = config('REDIS_QUEUE', default='freedemy')
+VALID_COURSE_LOCALES_FILE = config(
+    'VALID_COURSE_LOCALES_FILE', default='valid-course-locales.dat'
+)

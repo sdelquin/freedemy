@@ -1,7 +1,7 @@
 from logzero import logfile, logger
 
 import settings
-from promo import Course
+from promo import Course, get_valid_course_locales
 
 logfile(
     settings.LOGFILE,
@@ -12,7 +12,14 @@ logfile(
 
 def manage_course(course_tracker_url, delivery_service):
     logger.debug(f'Managing {course_tracker_url}')
-    course = Course(course_tracker_url, settings.UDEMY_COURSES_BASE_URL)
+
+    valid_course_locales = get_valid_course_locales(settings.VALID_COURSE_LOCALES_FILE)
+
+    course = Course(
+        course_tracker_url,
+        settings.UDEMY_COURSES_BASE_URL,
+        valid_course_locales,
+    )
 
     logger.debug('Coupons:')
     for coupon in course.coupons:

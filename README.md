@@ -20,8 +20,10 @@ Freedemy is a service written in Python to scrap and deliver **free couponed cou
    - `TWITTER_SECRET_KEY`
    - `SLACK_API_TOKEN`
    - `SLACK_CHANNEL`
-4. Include search terms in `search-terms.dat`.
-5. Install requirements: `pip install -r requirements.txt`
-6. Launch main script: `python main.py`
+4. Include **search terms** in `search-terms.dat`.
+5. Include **valid locales** for your courses in `valid-course-locales.dat`. Use the format `xx_XX` as in the [Posix Locales](https://docs.oracle.com/cd/E23824_01/html/E26033/glset.html). If this file does not exist all locales are admitted.
+6. Install **requirements**: `pip install -r requirements.txt`
+7. Launch **redis queue** service: `run-rq.sh`
+8. Launch **main script**: `run.sh`
 
 🎉 &nbsp; If everthing goes fine you'll get desired discount courses on your Slack channel.

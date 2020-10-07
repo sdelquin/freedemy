@@ -8,13 +8,27 @@ from bs4 import BeautifulSoup
 from logzero import logger
 
 
+def get_valid_course_locales(valid_course_locales_file):
+    logger.info('Getting valid course locales from file...')
+    f = Path(valid_course_locales_file)
+    if f.exists():
+        # split('.') helps when locales like es_ES.UTF-8 are found
+        valid_course_locales = [c.split('.')[0] for c in f.read_text().strip().split('\n')]
+        print(valid_course_locales)
+    else:
+        logger.warning('File of valid course locales not found. All locales are valid.')
+        valid_course_locales = []
+    return valid_course_locales
+
+
 class Course:
     ''' Represent a course in Udemy '''
 
-    def __init__(self, course_tracker_url, courses_base_url):
+    def __init__(self, course_tracker_url, courses_base_url, valid_course_locales=[]):
         logger.info('Building Udemy course...')
         self.course_tracker_url = course_tracker_url
         self.courses_base_url = courses_base_url
+        self.valid_course_locales = valid_course_locales
         self.get_course_tracker_data()
 
     def get_course_tracker_data(self):
@@ -83,11 +97,38 @@ class Course:
             logger.error('Unable to locate discount price')
 
     @property
+    def locale(self):
+        try:
+            return self.course_info['detail'][0]['locale']['locale'].strip()
+        except Exception:
+            logger.error('Unable to locate locale')
+
+    @property
     def url(self):
         return os.path.join(self.courses_base_url, self.slug, f'?couponCode={self.coupon}')
 
+    def has_valid_locale(self):
+        logger.info('Checking if course has valid locale...')
+        if self.locale is not None:
+            if self.valid_course_locales:
+                if not (valid := self.locale in self.valid_course_locales):
+                    logger.error(f'"{self.locale}" is not a valid locale')
+                return valid
+            else:
+                # no locales specified => all are valids!
+                return True
+        return False
+
     def is_valid(self):
-        return all((self.coupon is not None, self.slug is not None, self.title is not None))
+        logger.info('Checking if course is valid...')
+        return all(
+            (
+                self.coupon is not None,
+                self.slug is not None,
+                self.title is not None,
+                self.has_valid_locale(),
+            )
+        )
 
     @property
     def coupons(self):
