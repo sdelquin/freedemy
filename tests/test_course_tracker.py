@@ -1,8 +1,9 @@
 import os
 
 import pytest
-from course_tracker import CT_Twitter
 import settings
+from course_tracker import CT_Twitter
+from promo import Course
 
 API_WINDOW_SIZE = 10
 LAST_MANAGED_TWEET_FILE = 'last-managed-tweet.test'
@@ -25,3 +26,9 @@ def course_tracker():
 
 def test_get_matching_tweets(course_tracker):
     assert len(list(course_tracker.get_matching_tweets())) == API_WINDOW_SIZE
+
+
+def test_course_expiration_message(course_tracker):
+    last_url = list(course_tracker.get_couponed_course_tracker_urls())[-1]
+    last_course = Course(last_url)
+    assert last_course.get_expiration_message() is not None
