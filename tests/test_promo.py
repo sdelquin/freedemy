@@ -13,7 +13,11 @@ COURSE_PROPERTIES = (
     'rating',
     'subscribers',
     'discount_price',
+    'locale',
     'url',
+    'language',
+    'language_flag',
+    'coupons',
 )
 
 
