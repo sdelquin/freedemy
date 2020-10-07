@@ -1,6 +1,5 @@
 from datetime import timedelta
 
-from logzero import logfile, logger
 from redis import Redis
 from rq import Queue
 
@@ -8,12 +7,9 @@ import settings
 import tasks
 from course_tracker import CT_Twitter
 from delivery import SlackDelivery
+from utils import init_logger
 
-logfile(
-    settings.LOGFILE,
-    maxBytes=settings.LOGFILE_SIZE,
-    backupCount=settings.LOGFILE_BACKUP_COUNT,
-)
+logger = init_logger()
 
 
 def run():

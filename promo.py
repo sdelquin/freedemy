@@ -14,7 +14,6 @@ def get_valid_course_locales(valid_course_locales_file):
     if f.exists():
         # split('.') helps when locales like es_ES.UTF-8 are found
         valid_course_locales = [c.split('.')[0] for c in f.read_text().strip().split('\n')]
-        print(valid_course_locales)
     else:
         logger.warning('File of valid course locales not found. All locales are valid.')
         valid_course_locales = []

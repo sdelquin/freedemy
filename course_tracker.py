@@ -80,7 +80,7 @@ class CT_Twitter:
         logger.info('Starting tweet matching from search terms...')
         regex = utils.get_compiled_regex(tuple(self.get_search_terms()))
         for tweet in self.get_new_tweets():
-            logger.debug(tweet.full_text)
+            logger.debug(f'\n{tweet.full_text}')
             if regex.search(tweet.full_text) is not None:
                 yield tweet
 

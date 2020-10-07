@@ -1,13 +1,8 @@
-from logzero import logfile, logger
-
 import settings
 from promo import Course, get_valid_course_locales
+from utils import init_logger
 
-logfile(
-    settings.LOGFILE,
-    maxBytes=settings.LOGFILE_SIZE,
-    backupCount=settings.LOGFILE_BACKUP_COUNT,
-)
+logger = init_logger()
 
 
 def manage_course(course_tracker_url, delivery_service):
