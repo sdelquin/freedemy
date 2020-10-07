@@ -79,7 +79,7 @@ def get_compiled_regex(words: tuple):
 
 def init_logger():
     console_logformat = (
-        '%(color)s%(levelname)-8s %(asctime)s %(module)s:%(lineno)d%(end_color)s: '
+        '%(color)s%(levelname)-8s %(asctime)s %(module)s:%(lineno)d%(end_color)s> '
         '%(message)s'
     )
     # remove colors on logfile
