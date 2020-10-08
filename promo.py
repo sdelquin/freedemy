@@ -178,5 +178,4 @@ class Course:
             discount_price=self.discount_price,
             url=self.url,
             language_flag=self.language_flag,
-            expiration_message=self.get_expiration_message(),
         )
