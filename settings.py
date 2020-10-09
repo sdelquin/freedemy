@@ -22,3 +22,4 @@ REDIS_QUEUE = config('REDIS_QUEUE', default='freedemy')
 VALID_COURSE_LOCALES_FILE = config(
     'VALID_COURSE_LOCALES_FILE', default='valid-course-locales.dat'
 )
+PROXY_FOR_UDEMY_REQUESTS = config('PROXY_FOR_UDEMY_REQUESTS', default='')
