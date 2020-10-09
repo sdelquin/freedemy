@@ -1,7 +1,7 @@
 tweepy
 prettyconf
 beautifulsoup4
-requests
+requests[socks]
 slackclient
 logzero
 rq

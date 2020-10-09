@@ -152,7 +152,12 @@ class Course:
         if not hasattr(self, 'expiration_message') or force_request:
             logger.info('Getting expiration message from Udemy...')
             try:
-                response = requests.get(self.url)
+                if proxy := settings.PROXY_FOR_UDEMY_REQUESTS:
+                    logger.warning('Using {proxy} as proxy...')
+                    proxies = {'http': proxy, 'https': proxy}
+                    response = requests.get(self.url, proxies=proxies)
+                else:
+                    response = requests.get(self.url)
                 soup = BeautifulSoup(response.text, 'html.parser')
                 expiration_span = soup.find(
                     'span',
@@ -178,4 +183,5 @@ class Course:
             discount_price=self.discount_price,
             url=self.url,
             language_flag=self.language_flag,
+            expiration_message=self.get_expiration_message(),
         )
