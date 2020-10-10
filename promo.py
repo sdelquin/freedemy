@@ -153,7 +153,7 @@ class Course:
             logger.info('Getting expiration message from Udemy...')
             try:
                 if proxy := settings.PROXY_FOR_UDEMY_REQUESTS:
-                    logger.warning('Using {proxy} as proxy...')
+                    logger.warning(f'Using {proxy} as proxy...')
                     proxies = {'http': proxy, 'https': proxy}
                     response = requests.get(self.url, proxies=proxies)
                 else:
