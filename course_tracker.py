@@ -13,10 +13,6 @@ class CT_Tweet:
     def __init__(self, tweet: tweepy.models.Status):
         self.tweet = tweet
 
-    def is_couponed(self):
-        hashtags = [h['text'].upper() for h in self.tweet.entities['hashtags']]
-        return 'COUPON' in hashtags
-
     def get_course_tracker_url(self):
         for url in self.tweet.entities['urls']:
             if url['expanded_url'].startswith(settings.COURSE_TRACKER_BASE_URL):
@@ -89,9 +85,8 @@ class CT_Twitter:
         if managed_tweets_ids := [tweet.id for tweet in self.get_new_tweets()]:
             self.last_managed_tweet_file.write_text(str(max(managed_tweets_ids)))
 
-    def get_couponed_course_tracker_urls(self):
-        logger.info('Getting tracker url of free couponed courses..')
+    def get_course_tracker_urls(self):
+        logger.info('Getting tracker url of courses..')
         for tweet in self.get_matching_tweets():
             ct_tweet = CT_Tweet(tweet)
-            if ct_tweet.is_couponed():
-                yield ct_tweet.get_course_tracker_url()
+            yield ct_tweet.get_course_tracker_url()
