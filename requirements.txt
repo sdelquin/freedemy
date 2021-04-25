@@ -5,3 +5,4 @@ requests[socks]
 slackclient
 logzero
 rq
+selenium

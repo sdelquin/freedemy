@@ -1,26 +1,14 @@
-import json
-import os
 from pathlib import Path
 from string import Template
 
-import requests
-from bs4 import BeautifulSoup
 from logzero import logger
-
-import settings
-import utils
-
-
-def get_valid_course_locales(valid_course_locales_file):
-    logger.info('Getting valid course locales from file...')
-    f = Path(valid_course_locales_file)
-    if f.exists():
-        # split('.') helps when locales like es_ES.UTF-8 are found
-        valid_course_locales = [c.split('.')[0] for c in f.read_text().strip().split('\n')]
-    else:
-        logger.warning('File of valid course locales not found. All locales are valid.')
-        valid_course_locales = []
-    return valid_course_locales
+from selenium import webdriver
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.remote.webelement import WebElement
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 class Course:
@@ -28,149 +16,35 @@ class Course:
 
     def __init__(self, course_tracker_url, valid_course_locales=[]):
         logger.info('Building Udemy course...')
+
+        options = Options()
+        options.headless = False
+        self.webdriver = webdriver.Firefox(options=options)
+
         self.course_tracker_url = course_tracker_url
-        self.courses_base_url = settings.UDEMY_COURSES_BASE_URL
         self.valid_course_locales = valid_course_locales
-        self.get_course_tracker_data()
+        self.contents = self.get_contents()
 
-    def get_course_tracker_data(self):
-        logger.info('Getting Udemy course information...')
-        response = requests.get(self.course_tracker_url)
-        soup = BeautifulSoup(response.text, 'html.parser')
-        element = soup.find(id='__NEXT_DATA__')
-        self.next_data = json.loads(element.string)
-        # to improve readability (in further accesses)
-        self.course_info = self.next_data['props']['pageProps']['course']
-
-    @property
-    def slug(self):
-        try:
-            return self.next_data['query']['cleanUrl']
-        except Exception:
-            logger.error('Unable to locate slug')
-
-    @property
-    def coupon(self):
-        try:
-            return self.course_info['coupon'][0]['code']
-        except Exception:
-            logger.error('Unable to locate coupon')
-
-    @property
-    def title(self):
-        try:
-            return self.course_info['detail'][0]['title']
-        except Exception:
-            logger.error('Unable to locate title')
-
-    @property
-    def headline(self):
-        try:
-            return self.course_info['detail'][0]['headline']
-        except Exception:
-            logger.error('Unable to locate headline')
-
-    @property
-    def price(self):
-        try:
-            return self.course_info['detail'][0]['price'] / 100
-        except Exception:
-            logger.error('Unable to locate price')
-
-    @property
-    def rating(self):
-        try:
-            return self.course_info['detail'][0]['rating']
-        except Exception:
-            logger.error('Unable to locate rating')
-
-    @property
-    def subscribers(self):
-        try:
-            return self.course_info['detail'][0]['subscribers']
-        except Exception:
-            logger.error('Unable to locate subscribers')
-
-    @property
-    def discount_price(self):
-        try:
-            return self.course_info['coupon'][0]['discountPrice']
-        except Exception:
-            logger.error('Unable to locate discount price')
-
-    @property
-    def locale(self):
-        try:
-            return self.course_info['detail'][0]['locale']['locale'].strip()
-        except Exception:
-            logger.error('Unable to locate locale')
-
-    @property
-    def url(self):
-        return os.path.join(self.courses_base_url, self.slug, f'?couponCode={self.coupon}')
-
-    @property
-    def language(self):
-        try:
-            return self.locale.split('_')[0]
-        except Exception:
-            logger.error('Unable to locate language')
-
-    @property
-    def language_flag(self):
-        return utils.LANGUAGE_FLAGS.get(self.language, 'Unspecified')
-
-    def has_valid_locale(self):
-        logger.info('Checking if course has valid locale...')
-        if self.locale is not None:
-            if self.valid_course_locales:
-                if not (valid := self.locale in self.valid_course_locales):
-                    logger.error(f'"{self.locale}" is not a valid locale')
-                return valid
-            else:
-                # no locales specified => all are valids!
-                return True
-        return False
-
-    def is_valid(self):
-        logger.info('Checking if course is valid...')
-        return all(
-            (
-                self.coupon is not None,
-                self.slug is not None,
-                self.title is not None,
-                self.has_valid_locale(),
+    def get_contents(self) -> WebElement:
+        '''Returns main div of course'''
+        self.webdriver.get(self.course_tracker_url)
+        element = WebDriverWait(self.webdriver, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, '//*[@id="__next"]/div/div[1]/div/div/div/div[4]/button/span[1]')
             )
         )
-
-    @property
-    def coupons(self):
-        return self.next_data['props']['pageProps']['coupons']
-
-    def get_expiration_message(self, force_request=False):
-        # avoid not needed requests
-        if not hasattr(self, 'expiration_message') or force_request:
-            logger.info('Getting expiration message from Udemy...')
+        if '100%OFF' in element.text:
+            element.click()
             try:
-                if proxy := settings.PROXY_FOR_UDEMY_REQUESTS:
-                    logger.warning(f'Using {proxy} as proxy...')
-                    proxies = {'http': proxy, 'https': proxy}
-                    response = requests.get(self.url, proxies=proxies)
-                else:
-                    response = requests.get(self.url)
-                soup = BeautifulSoup(response.text, 'html.parser')
-                expiration_span = soup.find(
-                    'span',
-                    attrs={
-                        'data-purpose': 'safely-set-inner-html:'
-                        'discount-expiration:expiration-text'
-                    },
+                self.webdriver.switch_to.window(self.webdriver.window_handles[1])
+                element = WebDriverWait(self.webdriver, 10).until(
+                    EC.presence_of_element_located((By.CLASS_NAME, 'main-content-wrapper'))
                 )
-            except Exception:
-                logger.error('Unable to locate expiration message')
-            else:
-                self.expiration_message = getattr(expiration_span, 'text', 'Not available')
-        return self.expiration_message
+                return element
+            except TimeoutException:
+                logger.error('Timeout waiting for page loading')
+            finally:
+                self.webdriver.quit()
 
     def __str__(self):
         template = Template(Path('course.tmpl').read_text())
