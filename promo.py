@@ -37,6 +37,7 @@ class Course:
             )
         )
         if '100%OFF' in element.text:
+            self.is_couponed = True
             element.click()
             try:
                 self.webdriver.switch_to.window(self.webdriver.window_handles[1])
@@ -51,6 +52,8 @@ class Course:
                 self.url = ''
             finally:
                 self.webdriver.quit()
+        else:
+            self.is_couponed = False
 
     def extract_features(self):
         soup = BeautifulSoup(self.contents, 'html.parser')
