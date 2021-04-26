@@ -24,8 +24,7 @@ class Course:
 
         self.course_tracker_url = course_tracker_url
         self.valid_course_locales = valid_course_locales
-        self.get_contents()
-        if self.url:
+        if self.get_contents():
             self.extract_features()
 
     def get_contents(self) -> str:
@@ -54,6 +53,7 @@ class Course:
                 self.webdriver.quit()
         else:
             self.is_couponed = False
+        return self.contents
 
     def extract_features(self):
         soup = BeautifulSoup(self.contents, 'html.parser')
@@ -93,7 +93,11 @@ class Course:
 
     @property
     def has_valid_locale(self):
-        return self.locale in ('English', 'Spanish')
+        return self.locale.lower() in ('english', 'spanish', 'inglés', 'español')
+
+    @property
+    def is_valid(self):
+        return all([self.url, self.contents, self.is_couponed, self.has_valid_locale])
 
     def __str__(self):
         template = Template(Path('course.tmpl').read_text())
