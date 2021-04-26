@@ -91,6 +91,10 @@ class Course:
         element = soup.find('div', {'data-purpose': 'lead-course-locale'})
         self.locale = element.get_text().strip()
 
+    @property
+    def has_valid_locale(self):
+        return self.locale in ('English', 'Spanish')
+
     def __str__(self):
         template = Template(Path('course.tmpl').read_text())
         return template.substitute(
