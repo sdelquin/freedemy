@@ -24,8 +24,9 @@ class Course:
 
         self.course_tracker_url = course_tracker_url
         self.valid_course_locales = valid_course_locales
-        self.contents = self.get_contents()
-        self.extract_features()
+        self.get_contents()
+        if self.url:
+            self.extract_features()
 
     def get_contents(self) -> str:
         '''Returns html for main div of course'''
@@ -42,9 +43,12 @@ class Course:
                 element = WebDriverWait(self.webdriver, 10).until(
                     EC.presence_of_element_located((By.CLASS_NAME, 'main-content-wrapper'))
                 )
-                return element.get_attribute('innerHTML')
+                self.contents = element.get_attribute('innerHTML')
+                self.url = self.webdriver.current_url
             except TimeoutException:
                 logger.error('Timeout waiting for page loading')
+                self.contents = ''
+                self.url = ''
             finally:
                 self.webdriver.quit()
 
@@ -92,5 +96,5 @@ class Course:
             rating=self.rating,
             enrollments=self.enrollments,
             locale=self.locale,
-            url='',
+            url=self.url,
         )
