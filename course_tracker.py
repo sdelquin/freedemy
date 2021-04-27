@@ -31,7 +31,7 @@ class CT_Twitter:
         course_tracker_twitter=settings.COURSE_TRACKER_TWITTER,
         course_tracker_base_url=settings.COURSE_TRACKER_BASE_URL,
         last_managed_tweet_file=settings.LAST_MANAGED_TWEET_FILE,
-        api_window_size=settings,
+        api_window_size=settings.TWITTER_API_WINDOW_SIZE,
         search_terms_file=settings.SEARCH_TERMS_FILE,
     ):
         logger.info('Building Tweepy API handler...')
