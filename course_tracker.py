@@ -89,7 +89,7 @@ class CT_Twitter:
             self.last_managed_tweet_file.write_text(str(max(managed_tweets_ids)))
 
     def get_course_tracker_urls(self):
-        logger.info('Getting tracker url of courses..')
+        logger.info('Getting tracker url of courses...')
         for tweet in self.get_matching_tweets():
             ct_tweet = CT_Tweet(tweet, self.course_tracker_base_url)
             yield ct_tweet.get_course_tracker_url()
