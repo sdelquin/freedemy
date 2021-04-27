@@ -3,6 +3,7 @@ from pathlib import Path
 from string import Template
 from urllib import parse as urlparse
 
+import requests
 from bs4 import BeautifulSoup
 from logzero import logger
 from selenium import webdriver
@@ -26,7 +27,8 @@ class Course:
         self.course_tracker_url = course_tracker_url
         self.api_base_url = api_base_url
         if self.get_contents():
-            self.extract_features()
+            self.extract_web_features()
+            self.extract_api_features()
 
     def get_contents(self) -> str:
         logger.info('Getting html contents...')
@@ -57,8 +59,8 @@ class Course:
             self.is_couponed = False
         return self.contents
 
-    def extract_features(self):
-        logger.info('Extracting course features...')
+    def extract_web_features(self):
+        logger.info('Extracting course web features...')
 
         soup = BeautifulSoup(self.contents, 'html.parser')
 
@@ -92,6 +94,18 @@ class Course:
         element = soup.find('div', {'data-purpose': 'lead-course-locale'})
         self.locale = element.get_text().strip()
 
+    def extract_api_features(self):
+        logger.info('Extracting course api features...')
+
+        fields = requests.get(self.api_url).json()
+        self.new_price = fields['price_text']['data']['pricing_result']['price'][
+            'price_string'
+        ]
+        self.old_price = fields['price_text']['data']['pricing_result']['list_price'][
+            'price_string'
+        ]
+        self.expiration = fields['discount_expiration']['data']['discount_deadline_text']
+
     @property
     def has_valid_locale(self):
         return hasattr(self, 'locale') and self.locale.lower() in (
@@ -113,5 +127,8 @@ class Course:
             rating=self.rating,
             enrollments=self.enrollments,
             locale=self.locale,
+            expiration=self.expiration,
+            old_price=self.old_price,
+            new_price=self.new_price,
             url=self.url,
         )
