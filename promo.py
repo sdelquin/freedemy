@@ -27,8 +27,8 @@ class Course:
             self.extract_features()
 
     def get_contents(self) -> str:
-        '''Returns html for main div of course'''
         logger.info('Getting html contents...')
+
         self.webdriver.get(self.course_tracker_url)
         element = WebDriverWait(self.webdriver, 10).until(
             EC.presence_of_element_located(
@@ -42,13 +42,14 @@ class Course:
             try:
                 self.webdriver.switch_to.window(self.webdriver.window_handles[1])
                 element = WebDriverWait(self.webdriver, 10).until(
-                    EC.presence_of_element_located((By.CLASS_NAME, 'main-content-wrapper'))
+                    EC.presence_of_element_located((By.CLASS_NAME, 'ud-app-loaded'))
                 )
-                self.contents = element.get_attribute('innerHTML')
+                self.contents = element.get_attribute('outerHTML')
                 self.url = self.webdriver.current_url
             except TimeoutException:
                 logger.error('Timeout waiting for page loading')
             finally:
+                # TODO: Move to the constructor to quit webdriver in anycase
                 self.webdriver.quit()
         else:
             self.is_couponed = False
@@ -76,6 +77,9 @@ class Course:
 
         element = soup.find('div', {'data-purpose': 'lead-course-locale'})
         self.locale = element.get_text().strip()
+
+        element = soup.find('body')
+        self.course_id = element['data-clp-course-id'].strip()
 
     @property
     def has_valid_locale(self):
