@@ -11,8 +11,10 @@ LAST_MANAGED_TWEET_FILE = config(
 )
 SEARCH_TERMS_FILE = config('SEARCH_TERMS_FILE', default='search-terms.dat')
 TWITTER_API_WINDOW_SIZE = config('TWITTER_API_WINDOW_SIZE', cast=int, default=10)
-UDEMY_COURSES_BASE_URL = config(
-    'UDEMY_COURSES_BASE_URL', default='https://www.udemy.com/course/'
+UDEMY_API_BASE_URL = config(
+    'UDEMY_API_BASE_URL',
+    default='https://www.udemy.com/api-2.0/course-landing-components/{course_id}'
+    '/me/?couponCode={coupon_code}&components=price_text,discount_expiration',
 )
 LOGFILE = config('LOGFILE', default='freedemy.log')
 LOGFILE_SIZE = config('LOGFILE_SIZE', cast=float, default=1e6)

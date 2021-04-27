@@ -1,6 +1,7 @@
 import re
 from pathlib import Path
 from string import Template
+from urllib import parse as urlparse
 
 from bs4 import BeautifulSoup
 from logzero import logger
@@ -15,7 +16,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 class Course:
     ''' Represent a course in Udemy '''
 
-    def __init__(self, course_tracker_url):
+    def __init__(self, course_tracker_url, api_base_url):
         logger.info('Building Udemy course...')
 
         options = Options()
@@ -23,6 +24,7 @@ class Course:
         self.webdriver = webdriver.Firefox(options=options)
 
         self.course_tracker_url = course_tracker_url
+        self.api_base_url = api_base_url
         if self.get_contents():
             self.extract_features()
 
@@ -57,7 +59,19 @@ class Course:
 
     def extract_features(self):
         logger.info('Extracting course features...')
+
         soup = BeautifulSoup(self.contents, 'html.parser')
+
+        element = soup.find('body')
+        self.course_id = element['data-clp-course-id'].strip()
+
+        element = urlparse.parse_qs(urlparse.urlparse(self.url).query)
+        self.coupon_code = element['couponCode'][0]
+
+        self.api_url = self.api_base_url.format(
+            course_id=self.course_id, coupon_code=self.coupon_code
+        )
+
         element = soup.find('h1', {'data-purpose': 'lead-title'})
         self.title = element.string.strip()
 
@@ -77,9 +91,6 @@ class Course:
 
         element = soup.find('div', {'data-purpose': 'lead-course-locale'})
         self.locale = element.get_text().strip()
-
-        element = soup.find('body')
-        self.course_id = element['data-clp-course-id'].strip()
 
     @property
     def has_valid_locale(self):

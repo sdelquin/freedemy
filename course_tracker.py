@@ -15,6 +15,7 @@ class CT_Tweet:
 
     def get_course_tracker_url(self):
         for url in self.tweet.entities['urls']:
+            # TODO: Extract this setting outside module
             if url['expanded_url'].startswith(settings.COURSE_TRACKER_BASE_URL):
                 return url['expanded_url']
         logger.error('Unable to locate course tracker url')
