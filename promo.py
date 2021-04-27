@@ -7,7 +7,6 @@ import requests
 from bs4 import BeautifulSoup
 from logzero import logger
 from selenium import webdriver
-from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support import expected_conditions as EC
@@ -35,9 +34,15 @@ class Course:
         self.api_base_url = api_base_url
         self.proxy_for_udemy_requests = proxy_for_udemy_requests
 
-        if self.get_contents():
+        try:
+            self.get_contents()
+        except Exception as err:
+            logger.error(err)
+        else:
             self.extract_web_features()
             self.extract_api_features()
+        finally:
+            self.webdriver.quit()
 
     def get_contents(self) -> str:
         logger.info('Getting html contents...')
@@ -48,25 +53,17 @@ class Course:
                 (By.XPATH, '//*[@id="__next"]/div/div[1]/div/div/div/div[4]/button/span[1]')
             )
         )
-        self.contents, self.url = '', ''
         if '100%OFF' in element.text:
             self.is_couponed = True
             element.click()
-            try:
-                self.webdriver.switch_to.window(self.webdriver.window_handles[1])
-                element = WebDriverWait(self.webdriver, 10).until(
-                    EC.presence_of_element_located((By.CLASS_NAME, 'ud-app-loaded'))
-                )
-                self.contents = element.get_attribute('outerHTML')
-                self.url = self.webdriver.current_url
-            except TimeoutException:
-                logger.error('Timeout waiting for page loading')
-            finally:
-                # TODO: Move to the constructor to quit webdriver in anycase
-                self.webdriver.quit()
+            self.webdriver.switch_to.window(self.webdriver.window_handles[1])
+            element = WebDriverWait(self.webdriver, 10).until(
+                EC.presence_of_element_located((By.CLASS_NAME, 'ud-app-loaded'))
+            )
+            self.contents = element.get_attribute('outerHTML')
+            self.url = self.webdriver.current_url
         else:
             self.is_couponed = False
-        return self.contents
 
     def extract_web_features(self):
         logger.info('Extracting course web features...')
