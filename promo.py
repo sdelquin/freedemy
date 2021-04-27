@@ -15,7 +15,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 class Course:
     ''' Represent a course in Udemy '''
 
-    def __init__(self, course_tracker_url, valid_course_locales=[]):
+    def __init__(self, course_tracker_url):
         logger.info('Building Udemy course...')
 
         options = Options()
@@ -23,18 +23,19 @@ class Course:
         self.webdriver = webdriver.Firefox(options=options)
 
         self.course_tracker_url = course_tracker_url
-        self.valid_course_locales = valid_course_locales
         if self.get_contents():
             self.extract_features()
 
     def get_contents(self) -> str:
         '''Returns html for main div of course'''
+        logger.info('Getting html contents...')
         self.webdriver.get(self.course_tracker_url)
         element = WebDriverWait(self.webdriver, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, '//*[@id="__next"]/div/div[1]/div/div/div/div[4]/button/span[1]')
             )
         )
+        self.contents, self.url = '', ''
         if '100%OFF' in element.text:
             self.is_couponed = True
             element.click()
@@ -47,8 +48,6 @@ class Course:
                 self.url = self.webdriver.current_url
             except TimeoutException:
                 logger.error('Timeout waiting for page loading')
-                self.contents = ''
-                self.url = ''
             finally:
                 self.webdriver.quit()
         else:
@@ -56,6 +55,7 @@ class Course:
         return self.contents
 
     def extract_features(self):
+        logger.info('Extracting course features...')
         soup = BeautifulSoup(self.contents, 'html.parser')
         element = soup.find('h1', {'data-purpose': 'lead-title'})
         self.title = element.string.strip()
@@ -74,26 +74,17 @@ class Course:
             .replace(',', '')
         )
 
-        # element = soup.find('div', {'data-purpose': 'course-old-price-text'})
-        # print(element)
-        # element = element.find_all('span')[1].s.span
-        # self.old_price = float(re.search(r'[\d.]+', element.string.strip()).group())
-
-        # element = soup.find('div', {'data-purpose': 'discount-percentage'})
-        # element = element.find_all('span')[1].span
-        # self.discount_percentage = float(
-        #     re.search(r'[\d.]+', element.string.strip()).group()
-        # )
-        # self.discount_price = self.old_price - (
-        #     (100 - self.discount_percentage) * self.old_price
-        # )
-
         element = soup.find('div', {'data-purpose': 'lead-course-locale'})
         self.locale = element.get_text().strip()
 
     @property
     def has_valid_locale(self):
-        return self.locale.lower() in ('english', 'spanish', 'inglés', 'español')
+        return hasattr(self, 'locale') and self.locale.lower() in (
+            'english',
+            'spanish',
+            'inglés',
+            'español',
+        )
 
     @property
     def is_valid(self):

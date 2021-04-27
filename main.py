@@ -1,19 +1,13 @@
-from datetime import timedelta
-
-from redis import Redis
-from rq import Queue
-
 import settings
-import tasks
 from course_tracker import CT_Twitter
 from delivery import SlackDelivery
+from promo import Course
 from utils import init_logger
 
 logger = init_logger()
 
 
 def run():
-    course_queue = Queue(settings.REDIS_QUEUE, connection=Redis())
     course_tracker = CT_Twitter(
         consumer_key=settings.TWITTER_API_KEY,
         consumer_secret=settings.TWITTER_SECRET_KEY,
@@ -22,17 +16,14 @@ def run():
         api_window_size=settings.TWITTER_API_WINDOW_SIZE,
         search_terms_file=settings.SEARCH_TERMS_FILE,
     )
+
     delivery_service = SlackDelivery(settings.SLACK_API_TOKEN, settings.SLACK_CHANNEL)
-    for url in course_tracker.get_couponed_course_tracker_urls():
-        logger.info(
-            f'Enqueuing {url} for processing in {settings.JOB_EXECUTION_TIMEDELTA}s ...'
-        )
-        course_queue.enqueue_in(
-            timedelta(seconds=settings.JOB_EXECUTION_TIMEDELTA),
-            tasks.manage_course,
-            url,
-            delivery_service,
-        )
+
+    for ct_url in course_tracker.get_course_tracker_urls():
+        if (course := Course(ct_url)).is_valid:
+            delivery_service.post(course)
+        else:
+            logger.info('Discarding course: not valid...')
     course_tracker.update_last_managed_tweet_file()
 
 
