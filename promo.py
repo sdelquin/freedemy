@@ -17,7 +17,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 class Course:
     ''' Represent a course in Udemy '''
 
-    def __init__(self, course_tracker_url, api_base_url):
+    def __init__(self, course_tracker_url, api_base_url, proxy_for_udemy_requests):
         logger.info('Building Udemy course...')
 
         options = Options()
@@ -26,6 +26,8 @@ class Course:
 
         self.course_tracker_url = course_tracker_url
         self.api_base_url = api_base_url
+        self.proxy_for_udemy_requests = proxy_for_udemy_requests
+
         if self.get_contents():
             self.extract_web_features()
             self.extract_api_features()
@@ -97,7 +99,17 @@ class Course:
     def extract_api_features(self):
         logger.info('Extracting course api features...')
 
-        fields = requests.get(self.api_url).json()
+        if self.proxy_for_udemy_requests:
+            logger.warning(f'Using {self.proxy_for_udemy_requests} as proxy...')
+            proxies = {
+                'http': self.proxy_for_udemy_requests,
+                'https': self.proxy_for_udemy_requests,
+            }
+            response = requests.get(self.api_url, proxies=proxies)
+        else:
+            response = requests.get(self.api_url)
+
+        fields = response.json()
         self.new_price = fields['price_text']['data']['pricing_result']['price'][
             'price_string'
         ]

@@ -20,7 +20,11 @@ def run():
     delivery_service = SlackDelivery(settings.SLACK_API_TOKEN, settings.SLACK_CHANNEL)
 
     for ct_url in course_tracker.get_course_tracker_urls():
-        if (course := Course(ct_url, settings.UDEMY_API_BASE_URL)).is_valid:
+        if (
+            course := Course(
+                ct_url, settings.UDEMY_API_BASE_URL, settings.PROXY_FOR_UDEMY_REQUESTS
+            )
+        ).is_valid:
             delivery_service.post(course)
         else:
             logger.info('Discarding course: not valid...')
