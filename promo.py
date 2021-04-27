@@ -13,11 +13,18 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
+import settings
+
 
 class Course:
     ''' Represent a course in Udemy '''
 
-    def __init__(self, course_tracker_url, api_base_url, proxy_for_udemy_requests):
+    def __init__(
+        self,
+        course_tracker_url,
+        api_base_url=settings.UDEMY_API_BASE_URL,
+        proxy_for_udemy_requests=settings.PROXY_FOR_UDEMY_REQUESTS,
+    ):
         logger.info('Building Udemy course...')
 
         options = Options()

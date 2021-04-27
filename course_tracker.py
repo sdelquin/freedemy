@@ -2,21 +2,21 @@ from pathlib import Path
 
 import tweepy
 from logzero import logger
-import settings
 
+import settings
 import utils
 
 
 class CT_Tweet:
     ''' Course Tracker Tweet '''
 
-    def __init__(self, tweet: tweepy.models.Status):
+    def __init__(self, tweet: tweepy.models.Status, course_tracker_base_url):
         self.tweet = tweet
+        self.course_tracker_base_url = course_tracker_base_url
 
     def get_course_tracker_url(self):
         for url in self.tweet.entities['urls']:
-            # TODO: Extract this setting outside module
-            if url['expanded_url'].startswith(settings.COURSE_TRACKER_BASE_URL):
+            if url['expanded_url'].startswith(self.course_tracker_base_url):
                 return url['expanded_url']
         logger.error('Unable to locate course tracker url')
 
@@ -26,17 +26,19 @@ class CT_Twitter:
 
     def __init__(
         self,
-        consumer_key: str,
-        consumer_secret: str,
-        course_tracker_twitter: str,
-        last_managed_tweet_file: Path,
-        api_window_size: int,
-        search_terms_file: Path,
+        consumer_key=settings.TWITTER_API_KEY,
+        consumer_secret=settings.TWITTER_SECRET_KEY,
+        course_tracker_twitter=settings.COURSE_TRACKER_TWITTER,
+        course_tracker_base_url=settings.COURSE_TRACKER_BASE_URL,
+        last_managed_tweet_file=settings.LAST_MANAGED_TWEET_FILE,
+        api_window_size=settings,
+        search_terms_file=settings.SEARCH_TERMS_FILE,
     ):
         logger.info('Building Tweepy API handler...')
         auth = tweepy.AppAuthHandler(consumer_key, consumer_secret)
         self.api = tweepy.API(auth)
-        self.COURSE_TRACKER_TWITTER = course_tracker_twitter
+        self.course_tracker_twitter = course_tracker_twitter
+        self.course_tracker_base_url = course_tracker_base_url
 
         self.last_managed_tweet_file = Path(last_managed_tweet_file)
         if not self.last_managed_tweet_file.exists():
@@ -63,7 +65,7 @@ class CT_Twitter:
             logger.info('Getting new tweets from API...')
             cursor = tweepy.Cursor(
                 self.api.user_timeline,
-                id=self.COURSE_TRACKER_TWITTER,
+                id=self.course_tracker_twitter,
                 tweet_mode='extended',
                 since_id=self.get_last_managed_tweet_id(),
             )
@@ -89,5 +91,5 @@ class CT_Twitter:
     def get_course_tracker_urls(self):
         logger.info('Getting tracker url of courses..')
         for tweet in self.get_matching_tweets():
-            ct_tweet = CT_Tweet(tweet)
+            ct_tweet = CT_Tweet(tweet, self.course_tracker_base_url)
             yield ct_tweet.get_course_tracker_url()
