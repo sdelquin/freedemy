@@ -98,7 +98,7 @@ class Course:
         )
 
         element = soup.find('div', {'data-purpose': 'lead-course-locale'})
-        self.locale = element.get_text().strip()
+        self._locale = element.get_text().strip().upper()
 
     def extract_api_features(self):
         logger.info('Extracting course api features...')
@@ -124,12 +124,19 @@ class Course:
 
     @property
     def has_valid_locale(self):
-        return hasattr(self, 'locale') and self.locale.lower() in (
-            'english',
-            'spanish',
-            'inglés',
-            'español',
-        )
+        return self.locale in ('🇺🇸', '🇪🇸')
+
+    @property
+    def locale(self):
+        try:
+            if self._locale in ('ENGLISH', 'INGLÉS'):
+                return '🇺🇸'
+            elif self._locale in ('SPANISH', 'ESPAÑOL'):
+                return '🇪🇸'
+            else:
+                return '🏳'
+        except AttributeError:
+            return '🏳'
 
     @property
     def is_valid(self):
