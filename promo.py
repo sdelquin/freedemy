@@ -114,13 +114,15 @@ class Course:
             response = requests.get(self.api_url)
 
         fields = response.json()
-        self.new_price = fields['price_text']['data']['pricing_result']['price'][
-            'price_string'
-        ]
-        self.old_price = fields['price_text']['data']['pricing_result']['list_price'][
-            'price_string'
-        ]
-        self.expiration = fields['discount_expiration']['data']['discount_deadline_text']
+
+        aux = fields['price_text']['data']['pricing_result']['price']['amount']
+        self.new_price = int(aux) if int(aux) == aux else aux
+        aux = fields['price_text']['data']['pricing_result']['list_price']['amount']
+        self.old_price = int(aux) if int(aux) == aux else aux
+        aux = fields['discount_expiration']['data']['discount_deadline_text']
+        quant, units = re.search(r'^(\d+)\s+(.)', aux).groups()
+        mfactor = 24 if units == 'd' else 1
+        self.expiration = int(quant) * mfactor
 
     @property
     def has_valid_locale(self):
