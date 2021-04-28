@@ -15,9 +15,11 @@ COURSE_TRACKER_TWITTER = config('COURSE_TRACKER_TWITTER', default='comidoc')
 COURSE_TRACKER_BASE_URL = config('COURSE_TRACKER_BASE_URL', default='https://comidoc.net')
 
 LAST_MANAGED_TWEET_FILE = config(
-    'LAST_MANAGED_TWEET_FILE', default=PROJECT_DIR / 'last-managed-tweet.dat'
+    'LAST_MANAGED_TWEET_FILE', default=PROJECT_DIR / 'data' / 'last-managed-tweet.dat'
 )
-SEARCH_TERMS_FILE = config('SEARCH_TERMS_FILE', default=PROJECT_DIR / 'search-terms.dat')
+SEARCH_TERMS_FILE = config(
+    'SEARCH_TERMS_FILE', default=PROJECT_DIR / 'data' / 'search-terms.dat'
+)
 COURSE_TEMPLATE_FILE = config(
     'COURSE_TEMPLATE_FILE', default=PROJECT_DIR / 'data' / 'course.tmpl'
 )
@@ -28,9 +30,11 @@ UDEMY_API_BASE_URL = config(
     '/me/?couponCode={coupon_code}&components=price_text,discount_expiration',
 )
 
-LOGFILE = config('LOGFILE', default=PROJECT_DIR / 'freedemy.log')
+LOGFILE = config('LOGFILE', default=PROJECT_DIR / 'data' / 'freedemy.log')
 LOGFILE_SIZE = config('LOGFILE_SIZE', cast=float, default=1e6)
 LOGFILE_BACKUP_COUNT = config('LOGFILE_BACKUP_COUNT', cast=int, default=3)
-GECKODRIVER_LOGFILE = config('GECKODRIVER_LOGFILE', default=PROJECT_DIR / 'geckodriver.log')
+GECKODRIVER_LOGFILE = config(
+    'GECKODRIVER_LOGFILE', default=PROJECT_DIR / 'data' / 'geckodriver.log'
+)
 
 PROXY_FOR_UDEMY_REQUESTS = config('PROXY_FOR_UDEMY_REQUESTS', default='')
