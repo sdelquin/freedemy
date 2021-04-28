@@ -23,12 +23,13 @@ class Course:
         course_tracker_url,
         api_base_url=settings.UDEMY_API_BASE_URL,
         proxy_for_udemy_requests=settings.PROXY_FOR_UDEMY_REQUESTS,
+        geckodriver_logfile=settings.GECKODRIVER_LOGFILE,
     ):
         logger.info('Building Udemy course...')
 
         options = Options()
         options.headless = True
-        self.webdriver = webdriver.Firefox(options=options)
+        self.webdriver = webdriver.Firefox(options=options, log_path=geckodriver_logfile)
 
         self.course_tracker_url = course_tracker_url
         self.api_base_url = api_base_url
