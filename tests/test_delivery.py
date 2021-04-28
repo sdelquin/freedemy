@@ -1,21 +1,2 @@
-import pytest
-import settings
-from delivery import SlackDelivery
-from prettyconf import config
-from promo import Course
-
-
-@pytest.fixture
-def delivery_service():
-    return SlackDelivery(settings.SLACK_API_TOKEN, settings.SLACK_CHANNEL)
-
-
-@pytest.fixture
-def course():
-    c = Course(config('COURSE_TRACKER_TEST_URL'), settings.UDEMY_COURSES_BASE_URL)
-    c.get_course_tracker_data()
-    return c
-
-
-def test_post(delivery_service, course):
-    assert delivery_service.post(course) is not None
+def test_post(delivery_service, couponed_course):
+    assert delivery_service.post(couponed_course) is not None

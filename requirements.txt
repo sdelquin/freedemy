@@ -4,4 +4,4 @@ beautifulsoup4
 requests[socks]
 slackclient
 logzero
-rq
+selenium
