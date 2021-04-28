@@ -1,8 +1,9 @@
 import pytest
-import settings
-from delivery import SlackDelivery
 from prettyconf import config
-from promo import Course
+
+from freedemy import settings
+from freedemy.delivery import SlackDelivery
+from freedemy.promo import Course
 
 
 @pytest.fixture

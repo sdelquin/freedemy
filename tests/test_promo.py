@@ -2,7 +2,8 @@ from pathlib import Path
 
 import pytest
 from prettyconf import config
-from promo import Course
+
+from freedemy.promo import Course
 
 COURSE_PROPERTIES = (
     'slug',
