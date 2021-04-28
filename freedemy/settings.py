@@ -18,6 +18,9 @@ LAST_MANAGED_TWEET_FILE = config(
     'LAST_MANAGED_TWEET_FILE', default=PROJECT_DIR / 'last-managed-tweet.dat'
 )
 SEARCH_TERMS_FILE = config('SEARCH_TERMS_FILE', default=PROJECT_DIR / 'search-terms.dat')
+COURSE_TEMPLATE_FILE = config(
+    'COURSE_TEMPLATE_FILE', default=PROJECT_DIR / 'data' / 'course.tmpl'
+)
 
 UDEMY_API_BASE_URL = config(
     'UDEMY_API_BASE_URL',

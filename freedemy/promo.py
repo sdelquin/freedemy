@@ -24,16 +24,20 @@ class Course:
         api_base_url=settings.UDEMY_API_BASE_URL,
         proxy_for_udemy_requests=settings.PROXY_FOR_UDEMY_REQUESTS,
         geckodriver_logfile=settings.GECKODRIVER_LOGFILE,
+        course_template_file=settings.COURSE_TEMPLATE_FILE,
     ):
         logger.info('Building Udemy course...')
 
         options = Options()
         options.headless = True
-        self.webdriver = webdriver.Firefox(options=options, log_path=geckodriver_logfile)
+        self.webdriver = webdriver.Firefox(
+            options=options, service_log_path=geckodriver_logfile
+        )
 
         self.course_tracker_url = course_tracker_url
         self.api_base_url = api_base_url
         self.proxy_for_udemy_requests = proxy_for_udemy_requests
+        self.course_template_file = course_template_file
 
         try:
             self.get_contents()
@@ -147,7 +151,7 @@ class Course:
             return False
 
     def __str__(self):
-        template = Template(Path('course.tmpl').read_text())
+        template = Template(Path(self.course_template_file).read_text())
         return template.substitute(
             title=self.title,
             headline=self.headline,
