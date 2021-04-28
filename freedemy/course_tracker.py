@@ -82,6 +82,8 @@ class CT_Twitter:
             logger.debug(f'\n{tweet.full_text}')
             if regex.search(tweet.full_text) is not None:
                 yield tweet
+            else:
+                logger.info('Tweet not matching search terms...')
 
     def update_last_managed_tweet_file(self):
         logger.info('Updating last managed tweet on file...')
