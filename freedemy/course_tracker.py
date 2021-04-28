@@ -46,7 +46,7 @@ class CT_Twitter:
             self.last_managed_tweet_file.touch()
 
         self.api_window_size = api_window_size
-        self.api_tweets = []
+        self.api_tweets = None
 
         self.search_terms_file = Path(search_terms_file)
         if not self.search_terms_file.exists():
@@ -61,7 +61,7 @@ class CT_Twitter:
 
     def get_new_tweets(self, force_api_call=False):
         # avoid not needed API calls
-        if not self.api_tweets or force_api_call:
+        if self.api_tweets is None or force_api_call:
             logger.info('Getting new tweets from API...')
             cursor = tweepy.Cursor(
                 self.api.user_timeline,
