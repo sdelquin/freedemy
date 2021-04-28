@@ -39,8 +39,9 @@ class Course:
         except Exception as err:
             logger.error(err)
         else:
-            self.extract_web_features()
-            self.extract_api_features()
+            if self.is_couponed:
+                self.extract_web_features()
+                self.extract_api_features()
         finally:
             self.webdriver.quit()
 
@@ -130,19 +131,19 @@ class Course:
 
     @property
     def locale(self):
-        try:
-            if self._locale in ('ENGLISH', 'INGLÉS'):
-                return '🇺🇸'
-            elif self._locale in ('SPANISH', 'ESPAÑOL'):
-                return '🇪🇸'
-            else:
-                return '🏳'
-        except AttributeError:
+        if self._locale in ('ENGLISH', 'INGLÉS'):
+            return '🇺🇸'
+        elif self._locale in ('SPANISH', 'ESPAÑOL'):
+            return '🇪🇸'
+        else:
             return '🏳'
 
     @property
     def is_valid(self):
-        return all([self.url, self.contents, self.is_couponed, self.has_valid_locale])
+        try:
+            return all([self.url, self.contents, self.is_couponed, self.has_valid_locale])
+        except AttributeError:
+            return False
 
     def __str__(self):
         template = Template(Path('course.tmpl').read_text())
