@@ -15,10 +15,10 @@ COURSE_TRACKER_TWITTER = config('COURSE_TRACKER_TWITTER', default='comidoc')
 COURSE_TRACKER_BASE_URL = config('COURSE_TRACKER_BASE_URL', default='https://comidoc.net')
 
 LAST_MANAGED_TWEET_FILE = config(
-    'LAST_MANAGED_TWEET_FILE', default=PROJECT_DIR / 'data' / 'last-managed-tweet.dat'
+    'LAST_MANAGED_TWEET_FILE', default=PROJECT_DIR / 'data' / 'last-managed-tweet.txt'
 )
 SEARCH_TERMS_FILE = config(
-    'SEARCH_TERMS_FILE', default=PROJECT_DIR / 'data' / 'search-terms.dat'
+    'SEARCH_TERMS_FILE', default=PROJECT_DIR / 'data' / 'search-terms.txt'
 )
 COURSE_TEMPLATE_FILE = config(
     'COURSE_TEMPLATE_FILE', default=PROJECT_DIR / 'data' / 'course.tmpl'

@@ -20,8 +20,8 @@ Freedemy is a service written in Python to scrap and deliver **free couponed cou
    - `TWITTER_SECRET_KEY`
    - `SLACK_API_TOKEN`
    - `SLACK_CHANNEL`
-4. Include **search terms** in `search-terms.dat`.
+4. Include **search terms** in `data/search-terms.txt`.
 5. Install **requirements**: `pip install -r requirements.txt`
 6. Launch **main script**: `run.sh`
 
-🎉 &nbsp; If everthing goes fine you'll get desired discount courses on your Slack channel.
+🎉 &nbsp; If everything goes fine you'll get desired discount courses on your Slack channel.
