@@ -2,7 +2,7 @@ from pathlib import Path
 
 from prettyconf import config
 
-PROJECT_DIR = Path(__file__).parent.parent
+PROJECT_DIR = Path('.').resolve()
 
 TWITTER_API_KEY = config('TWITTER_API_KEY')
 TWITTER_SECRET_KEY = config('TWITTER_SECRET_KEY')

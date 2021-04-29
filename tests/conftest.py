@@ -1,6 +1,6 @@
 import pytest
 
-from freedemy import settings
+import settings
 from freedemy.delivery import SlackDelivery
 from freedemy.promo import Course
 

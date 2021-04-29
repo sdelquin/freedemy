@@ -4,7 +4,7 @@ import tweepy
 from logzero import logger
 
 import settings
-import utils
+from freedemy import utils
 
 
 class CT_Tweet:

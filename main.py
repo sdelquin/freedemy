@@ -1,7 +1,7 @@
-from course_tracker import CT_Twitter
-from delivery import SlackDelivery
-from promo import Course
-from utils import init_logger
+from freedemy.course_tracker import CT_Twitter
+from freedemy.delivery import SlackDelivery
+from freedemy.promo import Course
+from freedemy.utils import init_logger
 
 logger = init_logger()
 

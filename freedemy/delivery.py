@@ -3,7 +3,7 @@ from slack import WebClient
 from slack.errors import SlackApiError
 
 import settings
-from promo import Course
+from freedemy.promo import Course
 
 
 class SlackDelivery:

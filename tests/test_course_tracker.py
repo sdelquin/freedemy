@@ -2,7 +2,7 @@ import os
 
 import pytest
 
-from freedemy import settings
+import settings
 from freedemy.course_tracker import CT_Twitter
 
 TWITTER_API_WINDOW_SIZE = 10
