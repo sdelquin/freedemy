@@ -4,6 +4,7 @@ from string import Template
 from urllib import parse as urlparse
 
 import requests
+import settings
 from bs4 import BeautifulSoup
 from logzero import logger
 from selenium import webdriver
@@ -11,8 +12,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-
-import settings
 
 
 class Course:
@@ -55,9 +54,8 @@ class Course:
 
         self.webdriver.get(self.course_tracker_url)
         element = WebDriverWait(self.webdriver, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, '//*[@id="__next"]/div/div[1]/div/div/div/div[4]/button/span[1]')
-            )
+            # button with link to Freedemy
+            EC.presence_of_element_located((By.CLASS_NAME, 'MuiButton-label'))
         )
         if '100%OFF' in element.text:
             self.is_couponed = True
