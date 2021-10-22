@@ -53,9 +53,11 @@ class Course:
         logger.info('Getting html contents...')
 
         self.webdriver.get(self.course_tracker_url)
+        coupon_button_xpath = '//*[@id="__next"]/div/div[3]/div/div[5]/div[2]/div/button'
         element = WebDriverWait(self.webdriver, 10).until(
-            # button with link to Freedemy
-            EC.presence_of_element_located((By.CLASS_NAME, 'MuiButton-label'))
+            # button with link to Udemy ↓
+            # SHARE ON FACEBOOK | 100%OFF COUPON | SHARE ON TWITTER
+            EC.presence_of_element_located((By.XPATH, coupon_button_xpath))
         )
         if '100%OFF' in element.text:
             self.is_couponed = True
