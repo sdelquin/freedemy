@@ -4,14 +4,16 @@ from string import Template
 from urllib import parse as urlparse
 
 import requests
-import settings
 from bs4 import BeautifulSoup
 from logzero import logger
 from selenium import webdriver
+from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+
+import settings
 
 
 class Course:
@@ -40,7 +42,7 @@ class Course:
 
         try:
             self.get_contents()
-        except Exception as err:
+        except WebDriverException as err:
             logger.error(err)
         else:
             if self.is_couponed:

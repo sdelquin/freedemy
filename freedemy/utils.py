@@ -29,4 +29,6 @@ def init_logger():
         backupCount=settings.LOGFILE_BACKUP_COUNT,
         formatter=file_formatter,
     )
-    return logzero.logger
+    logger = logzero.logger
+    logger.setLevel(logzero.DEBUG)
+    return logger
