@@ -55,7 +55,7 @@ class Course:
         logger.info('Getting html contents...')
 
         self.webdriver.get(self.course_tracker_url)
-        coupon_button_xpath = '//*[@id="__next"]/div/div[3]/div/div[5]/div[2]/div/button'
+        coupon_button_xpath = '//*[@id="__next"]/div/div[2]/div/div[5]/div[2]/div/button'
         element = WebDriverWait(self.webdriver, 10).until(
             # button with link to Udemy ↓
             # SHARE ON FACEBOOK | 100%OFF COUPON | SHARE ON TWITTER
