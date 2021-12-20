@@ -56,13 +56,11 @@ class Course:
 
         self.webdriver.get(self.course_tracker_url)
         coupon_button_css_selector = (
-            '#__next > div > div.pt-14.bg-th-background > div > '
+            '#__next > div > div > article > '
             r'div.mx-auto.items-center.block.space-y-4.md\:space-y-0.p-8.md\:'
             'flex.justify-evenly.bg-th-background.max-w-5xl.pt-8.pb-8 > div > div > button'
         )
         element = WebDriverWait(self.webdriver, 10).until(
-            # button with link to Udemy ↓
-            # SHARE ON FACEBOOK | 100%OFF COUPON | SHARE ON TWITTER
             EC.presence_of_element_located((By.CSS_SELECTOR, coupon_button_css_selector))
         )
         if '100%OFF' in element.text:

@@ -4,4 +4,4 @@ beautifulsoup4
 requests[socks]
 slackclient
 logzero
-selenium
+selenium==3.141.0
