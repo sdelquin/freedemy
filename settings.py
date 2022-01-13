@@ -38,3 +38,8 @@ GECKODRIVER_LOGFILE = config(
 )
 
 PROXY_FOR_UDEMY_REQUESTS = config('PROXY_FOR_UDEMY_REQUESTS', default='')
+
+COUPON_BUTTON_XPATH = config(
+    'COUPON_BUTTON_XPATH',
+    default='//*[@id="__next"]/div/div/article/div[4]/div/div[2]/div/button',
+)

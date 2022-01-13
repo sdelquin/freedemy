@@ -26,6 +26,7 @@ class Course:
         proxy_for_udemy_requests=settings.PROXY_FOR_UDEMY_REQUESTS,
         geckodriver_logfile=settings.GECKODRIVER_LOGFILE,
         course_template_file=settings.COURSE_TEMPLATE_FILE,
+        coupon_button_xpath=settings.COUPON_BUTTON_XPATH,
     ):
         logger.info('Building Udemy course...')
 
@@ -39,6 +40,7 @@ class Course:
         self.api_base_url = api_base_url
         self.proxy_for_udemy_requests = proxy_for_udemy_requests
         self.course_template_file = course_template_file
+        self.coupon_button_xpath = coupon_button_xpath
 
         try:
             self.get_contents()
@@ -55,13 +57,8 @@ class Course:
         logger.info('Getting html contents...')
 
         self.webdriver.get(self.course_tracker_url)
-        coupon_button_css_selector = (
-            '#__next > div > div > article > '
-            r'div.mx-auto.items-center.block.space-y-4.md\:space-y-0.p-8.md\:'
-            'flex.justify-evenly.bg-th-background.max-w-5xl.pt-8.pb-8 > div > div > button'
-        )
         element = WebDriverWait(self.webdriver, 10).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, coupon_button_css_selector))
+            EC.presence_of_element_located((By.XPATH, self.coupon_button_xpath))
         )
         if '100%OFF' in element.text:
             self.is_couponed = True
