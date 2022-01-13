@@ -133,6 +133,9 @@ class Course:
         mfactor = 24 if units == 'd' else 1
         self.expiration = int(quant) * mfactor
 
+        currency = fields['price_text']['data']['pricing_result']['list_price']['currency']
+        logger.debug(f'Course price currency: {currency}')
+
     @property
     def has_valid_locale(self):
         return self.locale in ('🇺🇸', '🇪🇸')
