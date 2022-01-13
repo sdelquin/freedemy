@@ -55,6 +55,7 @@ class Course:
 
     def get_contents(self) -> str:
         logger.info('Getting html contents...')
+        logger.debug(self.course_tracker_url)
 
         self.webdriver.get(self.course_tracker_url)
         element = WebDriverWait(self.webdriver, 10).until(
@@ -109,6 +110,7 @@ class Course:
 
     def extract_api_features(self):
         logger.info('Extracting course api features...')
+        logger.debug(self.api_url)
 
         if self.proxy_for_udemy_requests:
             logger.warning(f'Using {self.proxy_for_udemy_requests} as proxy...')
